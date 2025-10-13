@@ -5,8 +5,6 @@ import com.example.tableroplus_jetpackcompose.Model.ToDo
 class AppRepository {
 
     private var todoList = mutableListOf<ToDo>(
-        ToDo("Lavar Auto","20 de Mayo, 2025", false),
-        ToDo("Hacer tarea de Full Stack","20 de Mayo, 2025", true),
     )
 
     fun getListOfToDo(): List<ToDo>{

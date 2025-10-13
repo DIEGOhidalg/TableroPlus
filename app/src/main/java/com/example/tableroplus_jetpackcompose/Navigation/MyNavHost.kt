@@ -7,3 +7,4 @@ object ListOfTodos;
 
 @Serializable
 object AddNewTodo;
+

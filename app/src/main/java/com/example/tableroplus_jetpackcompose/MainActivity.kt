@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.tableroplus_jetpackcompose.Navigation.MyApp
 import com.example.tableroplus_jetpackcompose.ViewModel.ToDoViewModel
 import com.example.tableroplus_jetpackcompose.Views.AddNewToDoScreen
 import com.example.tableroplus_jetpackcompose.Views.ToDoListScreen
@@ -30,24 +31,4 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun MyApp(vm: Lazy<ToDoViewModel>){
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "ListOfTodos" ) {
-        composable("ListOfTodos") {
-            // App main UI
-            ToDoListScreen(navController,vm.value.stateList, onswitch = { id, value ->
-                vm.value.updateOneTask(id,value)
-            }, ondelete = { todeletetask ->
-                vm.value.deleteOneTask(todeletetask)
-            })
-        }
-        composable("AddNewTodo") {
-            // add new task UI
-            AddNewToDoScreen(navController, onSave = {toadd ->
-                vm.value.addNewTask(toadd)
-            })
-        }
-    }
-}
 
