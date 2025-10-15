@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -55,9 +56,9 @@ fun ToDoListScreen(
     Scaffold (
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBar(title = {
-            Column {
+            Column{
                 Text("Tablero Plus+", style = MaterialTheme.typography.titleLarge)
-                Text(" Bienvenido: ${estado.nombre}", style = MaterialTheme.typography.bodyMedium
+                Text(" Bienvenido ${estado.nombre}. Estas son tus tareas: ", style = MaterialTheme.typography.bodyMedium
                 )
 
             }
@@ -70,18 +71,23 @@ fun ToDoListScreen(
         }){ innerPadding ->
         LazyColumn(Modifier.padding(innerPadding)) {
             items(count = list.toList().count()){ index->
-                Column (modifier = Modifier.background(
-                    if (list.toList()[index].isUrgent) Color.Red else Color.Green
+                Column (modifier = Modifier.
+                background(
+                    if (list.toList()[index].isUrgent)  Color.hsv(0f, 0.55f, 1f) else Color.hsv(230f, 0.20f, 1f),
+                    RoundedCornerShape(12.dp)
+
                 )){
-                    Row (modifier = Modifier.fillMaxWidth().border(1.dp, Color.Black).padding(10.dp)){
+                    Row (modifier = Modifier.fillMaxWidth().border(1.dp, Color.hsv(230f, 0.20f, 0.72f), RoundedCornerShape(16.dp)).padding(10.dp)){
                         Column(modifier = Modifier.fillMaxWidth(0.7f)) {
                             Text(fontSize = 20.sp, text = list.toList()[index].task )
                             Spacer(Modifier.height(10.dp))
                             Text(fontSize = 20.sp, text = list.toList()[index].date)
+
                         }
                         Switch(checked =  list.toList()[index].isUrgent,
                             onCheckedChange = {it->
                                 onswitch(index,it)
+
                             })
                         IconButton(onClick = {
                             ondelete(list.toList()[index])

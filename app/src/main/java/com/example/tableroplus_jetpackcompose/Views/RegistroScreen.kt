@@ -7,9 +7,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.style.TextAlign
 import com.example.tableroplus_jetpackcompose.ViewModel.UsuarioViewModel
-
+import androidx.compose.ui.graphics.Color
 
 
 @Composable
@@ -23,8 +24,9 @@ fun RegistroScreen(
         text = "Bienvenido a Tablero+",
         modifier = Modifier
             .fillMaxWidth()
-            .padding(all = 120.dp),
-        textAlign = TextAlign.Center
+            .padding(all = 70.dp),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.titleLarge
     )
 
 
@@ -99,8 +101,11 @@ fun RegistroScreen(
                 .fillMaxWidth()
                 .clickable {
                     navController.navigate("ListOfTodos")
+                    viewModel.onNombreChange("Invitado")
                 },
-            textAlign = TextAlign.Center
+            color = Color.Gray,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium
         )
 
 

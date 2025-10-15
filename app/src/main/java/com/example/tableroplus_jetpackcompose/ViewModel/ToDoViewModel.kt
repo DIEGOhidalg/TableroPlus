@@ -3,6 +3,8 @@ package com.example.tableroplus_jetpackcompose.ViewModel
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.example.tableroplus_jetpackcompose.Model.ToDo
+import com.example.tableroplus_jetpackcompose.Model.UsuarioErrores
+import kotlinx.coroutines.flow.update
 
 class ToDoViewModel : ViewModel() {
 
@@ -27,6 +29,8 @@ class ToDoViewModel : ViewModel() {
         repo.deleteOneToDo(toDo)
         stateList.remove(toDo)
     }
+
+
 
 
 }
