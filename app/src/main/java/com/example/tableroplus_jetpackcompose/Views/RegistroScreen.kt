@@ -1,4 +1,5 @@
 package com.example.tableroplus_jetpackcompose.Views
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -18,6 +19,14 @@ fun RegistroScreen(
 ) {
     val estado by viewModel.estado.collectAsState()
 
+    Text(
+        text = "Bienvenido a Tablero+",
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(all = 120.dp),
+        textAlign = TextAlign.Center
+    )
+
 
     Column(
         modifier = Modifier
@@ -27,11 +36,7 @@ fun RegistroScreen(
     ) {
         // Campo nombre
 
-        Text(
-            text = "Bienvenido a Tablero+",
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
+
 
 
         OutlinedTextField(
@@ -76,8 +81,6 @@ fun RegistroScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-
-
         Button(
             onClick = {
                 if (viewModel.validarFormulario()) {
@@ -90,8 +93,23 @@ fun RegistroScreen(
             Text("Registrar")
         }
 
+        Text(
+            text = "Continuar sin registro",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    navController.navigate("ListOfTodos")
+                },
+            textAlign = TextAlign.Center
+        )
+
+
+
+
+        }
 
     }
 
-}
+
+
 

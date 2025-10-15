@@ -17,33 +17,51 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.tableroplus_jetpackcompose.Model.ToDo
+import com.example.tableroplus_jetpackcompose.ViewModel.UsuarioViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+
+
+
 fun ToDoListScreen(
     navController: NavController,
+    viewModel: UsuarioViewModel,
     list: SnapshotStateList<ToDo>,
     onswitch: (id: Int,value: Boolean)->Unit,
     ondelete: (todeleteToD: ToDo)->Unit,
+
 ) {
+    val estado by viewModel.estado.collectAsState()
     Scaffold (
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBar(title = {
-            Text("Tablero Plus+")
-        })} , floatingActionButton = {
+            Column {
+                Text("Tablero Plus+", style = MaterialTheme.typography.titleLarge)
+                Text(" Bienvenido: ${estado.nombre}", style = MaterialTheme.typography.bodyMedium
+                )
+
+            }
+        })}  , floatingActionButton = {
             FloatingActionButton(onClick = {
                 navController.navigate("AddNewTodo")
             }) {

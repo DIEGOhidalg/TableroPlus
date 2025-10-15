@@ -1,6 +1,7 @@
 package com.example.tableroplus_jetpackcompose.Navigation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.*
+import androidx.lifecycle.ViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -23,11 +24,7 @@ fun MyApp(vm: Lazy<ToDoViewModel>){
 
         composable("ListOfTodos") {
             // App main UI
-            ToDoListScreen(navController,vm.value.stateList, onswitch = { id, value ->
-                vm.value.updateOneTask(id,value)
-            }, ondelete = { todeletetask ->
-                vm.value.deleteOneTask(todeletetask)
-            })
+            ToDoListScreen(navController, usuarioViewModel, vm.value.stateList, onswitch = { id, value ->  vm.value.updateOneTask(id,value) }, ondelete = { todeletetask -> vm.value.deleteOneTask(todeletetask) } )
         }
         composable("AddNewTodo") {
             // add new task UI
