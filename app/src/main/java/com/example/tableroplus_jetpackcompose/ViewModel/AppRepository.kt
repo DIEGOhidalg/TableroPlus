@@ -23,4 +23,8 @@ class AppRepository {
         todoList.remove(todelete)
     }
 
+    fun editTask(index: Int, newTask: ToDo) {
+        todoList[index] = newTask
+    }
+
 }

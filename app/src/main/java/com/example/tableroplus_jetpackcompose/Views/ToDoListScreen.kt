@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -89,6 +90,14 @@ fun ToDoListScreen(
                                 onswitch(index,it)
 
                             })
+
+                        IconButton(onClick = {
+                            // Navega a la pantalla de edición
+                            navController.navigate("EditTodo/$index")
+                        }) {
+                            Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
+                        }
+
                         IconButton(onClick = {
                             ondelete(list.toList()[index])
                         }) {

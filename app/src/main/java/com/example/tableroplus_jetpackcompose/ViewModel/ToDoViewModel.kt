@@ -30,6 +30,12 @@ class ToDoViewModel : ViewModel() {
         stateList.remove(toDo)
     }
 
+    fun editTask(index: Int, newTask: ToDo) {
+        repo.editTask(index, newTask)
+        stateList[index] = newTask
+    }
+
+
 
 
 
