@@ -43,6 +43,7 @@ dependencies {
     val nav_version = "2.9.5"
 
     // Jetpack Compose integration
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation(libs.androidx.core.ktx)

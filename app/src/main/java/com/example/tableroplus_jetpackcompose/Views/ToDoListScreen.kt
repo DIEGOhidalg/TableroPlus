@@ -15,6 +15,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -29,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,20 +60,45 @@ fun ToDoListScreen(
     val estado by viewModel.estado.collectAsState()
     Scaffold (
         modifier = Modifier.fillMaxSize(),
-        topBar = { TopAppBar(title = {
-            Column{
-                Text("Tablero Plus+", style = MaterialTheme.typography.titleLarge)
-                Text(" Bienvenido ${estado.nombre}. Estas son tus tareas: ", style = MaterialTheme.typography.bodyMedium
-                )
 
-            }
-        })}  , floatingActionButton = {
+        // 1. El topBar empieza y termina aquí
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column{
+                        Text("Tablero Plus+", style = MaterialTheme.typography.titleLarge)
+                        Text(" Bienvenido ${estado.nombre}. Estas son tus tareas: ", style = MaterialTheme.typography.bodyMedium
+                        )
+
+                    }
+                    },
+                actions = {
+                    IconButton(onClick = {
+                        // Por cierto, esto aún tiene el error de antes,
+                        // debería ser "registro"
+                        navController.navigate("registro")
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Modificar Perfil"
+                        )
+                    }
+                }
+                // --- El TopAppBar TERMINA AQUÍ ---
+            )
+        }, // <-- La llave del topBar se cierra aquí
+
+        // 2. El FAB va AQUÍ, como hermano del topBar
+        floatingActionButton = {
             FloatingActionButton(onClick = {
                 navController.navigate("AddNewTodo")
             }) {
                 Icon(Icons.Default.Add, contentDescription = "add new todo")
             }
-        }){ innerPadding ->
+        }
+
+    ) { innerPadding ->
+
         LazyColumn(Modifier.padding(innerPadding)) {
             items(count = list.toList().count()){ index->
                 Column (modifier = Modifier.
@@ -83,6 +112,8 @@ fun ToDoListScreen(
                             Text(fontSize = 20.sp, text = list.toList()[index].task )
                             Spacer(Modifier.height(10.dp))
                             Text(fontSize = 20.sp, text = list.toList()[index].date)
+
+
 
                         }
                         Switch(checked =  list.toList()[index].isUrgent,
@@ -104,7 +135,10 @@ fun ToDoListScreen(
                             Icon(imageVector = Icons.Default.Delete,
                                 contentDescription = "Delete")
                         }
-                    } }
+
+
+                    }
+                }
             }
         }
 

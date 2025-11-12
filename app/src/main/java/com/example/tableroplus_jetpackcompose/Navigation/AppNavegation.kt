@@ -12,7 +12,9 @@ import com.example.tableroplus_jetpackcompose.ViewModel.UsuarioViewModel
 import com.example.tableroplus_jetpackcompose.Views.AddNewToDoScreen
 import com.example.tableroplus_jetpackcompose.Views.EditToDoScreen
 import com.example.tableroplus_jetpackcompose.Views.RegistroScreen
+import com.example.tableroplus_jetpackcompose.Views.RoutingScreen
 import com.example.tableroplus_jetpackcompose.Views.ToDoListScreen
+import com.example.tableroplus_jetpackcompose.Views.EditarScreen
 
 
 @Composable
@@ -21,7 +23,12 @@ fun MyApp(vm: Lazy<ToDoViewModel>){
     val usuarioViewModel: UsuarioViewModel = viewModel()
     val toDoViewModel: ToDoViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = "registro" ) {
+    NavHost(navController = navController, startDestination = "router" ) {
+
+        composable("router") {
+            RoutingScreen(navController, usuarioViewModel)
+        }
+
 
         composable("registro") {
             RegistroScreen(navController, usuarioViewModel)
@@ -54,6 +61,10 @@ fun MyApp(vm: Lazy<ToDoViewModel>){
                     toDoViewModel.editTask(idx, newToDo)
                 }
             )
+        }
+
+        composable("EditarScreen") {
+            EditarScreen(navController, usuarioViewModel)
         }
 
     }

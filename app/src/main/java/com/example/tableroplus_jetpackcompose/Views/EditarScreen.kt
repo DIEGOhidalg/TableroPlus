@@ -31,7 +31,7 @@ import com.example.tableroplus_jetpackcompose.R
 
 
 @Composable
-fun RegistroScreen(
+fun EditarScreen(
     navController: NavController,
     viewModel: UsuarioViewModel
 ) {
@@ -74,7 +74,7 @@ fun RegistroScreen(
         Spacer(modifier = Modifier.height(24.dp)) // Espacio
 
         Text(
-            text = "Bienvenido a Tablero+",
+            text = "Tablero+",
             // No necesitas fillMaxWidth() si horizontalAlignment es Center
             modifier = Modifier.padding(bottom = 4.dp),
             textAlign = TextAlign.Center,
@@ -82,7 +82,7 @@ fun RegistroScreen(
         )
 
         Text(
-            text = "Iniciar sesion para Tablero+",
+            text = "Editar perfil",
             modifier = Modifier.padding(bottom = 32.dp), // Espacio antes del formulario
             color = Color.Gray,
             textAlign = TextAlign.Center,
@@ -232,13 +232,13 @@ fun RegistroScreen(
 
 
         ) {
-            Text( "Registrar")
+            Text( "Editar")
         }
 
         Spacer(modifier = Modifier.height(16.dp)) // Espacio
 
         Text(
-            text = "Continuar sin registro",
+            text = "Volver",
             modifier = Modifier
                 .clickable {
                     navController.navigate("ListOfTodos")
