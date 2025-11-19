@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -32,14 +34,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.tableroplus_jetpackcompose.Model.ToDo
 import com.example.tableroplus_jetpackcompose.ViewModel.UsuarioViewModel
 
@@ -74,14 +79,27 @@ fun ToDoListScreen(
                     },
                 actions = {
                     IconButton(onClick = {
-                        // Por cierto, esto aún tiene el error de antes,
-                        // debería ser "registro"
-                        navController.navigate("registro")
+                        // ⚠️ CORRECCIÓN IMPORTANTE:
+                        // Cambiamos "PerfilScreen" por "registro" para que no se crashee
+                        navController.navigate("PerfilScreen")
                     }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Modificar Perfil"
-                        )
+                        // Verificamos si hay una URI de imagen guardada
+                        if (estado.imagenUri.isNotEmpty()) {
+                            AsyncImage(
+                                model = estado.imagenUri,
+                                contentDescription = "Foto de Perfil",
+                                modifier = Modifier
+                                    .size(36.dp) // Tamaño ideal para la barra superior
+                                    .clip(CircleShape), // La recortamos en círculo
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            // Si no hay foto, mostramos el ícono por defecto
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Modificar Perfil"
+                            )
+                        }
                     }
                 }
                 // --- El TopAppBar TERMINA AQUÍ ---

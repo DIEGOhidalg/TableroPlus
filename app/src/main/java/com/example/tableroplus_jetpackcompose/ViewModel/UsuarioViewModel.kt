@@ -12,8 +12,7 @@ import com.example.tableroplus_jetpackcompose.Model.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-// 1. CAMBIO: Hereda de AndroidViewModel(application) en lugar de ViewModel()
-// En UsuarioViewModel.kt
+
 
 class UsuarioViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -24,23 +23,23 @@ class UsuarioViewModel(application: Application) : AndroidViewModel(application)
     private val dataStoreRepository = UserDataStoreRepository(application)
 
     init {
-        // Modificamos este bloque
-        viewModelScope.launch {
-            // Usamos .first() para tomar solo el primer valor emitido (los datos guardados)
-            dataStoreRepository.userDataFlow.first()
-                .let { (nombre, correo) ->
 
-                    // Actualizamos el estado con los datos cargados
-                    _estado.update {
-                        it.copy(
-                            nombre = nombre,
-                            correo = correo,
-                            isLoading = false // <-- ¡Marcamos la carga como finalizada!
-                        )
-                    }
+        viewModelScope.launch {
+            // Ahora recibimos un objeto 'it' que es de tipo DatosUsuario
+            dataStoreRepository.userDataFlow.first().let { datos ->
+                _estado.update {
+                    it.copy(
+                        nombre = datos.nombre,
+                        correo = datos.correo,
+                        clave = datos.clave,
+                        imagenUri = datos.imagenUri,
+                        isLoading = false
+                    )
                 }
+            }
         }
     }
+
     fun onNombreChange(valor: String) {
         _estado.update { it.copy(nombre = valor, errores = it.errores.copy(nombre = null)) }
     }
@@ -53,20 +52,23 @@ class UsuarioViewModel(application: Application) : AndroidViewModel(application)
         _estado.update { it.copy(clave = valor, errores = it.errores.copy(clave = null)) }
     }
 
+    fun onImagenUriChange(uriString: String) {
+        _estado.update { it.copy(imagenUri = uriString) }
+    }
+
     // 4. NUEVA FUNCIÓN: La llamaremos desde la UI para guardar
     fun guardarUsuario() {
         val estadoActual = _estado.value
 
-        // Lanzamos una coroutine en el scope del ViewModel
         viewModelScope.launch {
             dataStoreRepository.saveUserData(
                 nombre = estadoActual.nombre,
-                correo = estadoActual.correo
+                correo = estadoActual.correo,
+                clave = estadoActual.clave,
+                imagenUri = estadoActual.imagenUri
             )
-            // NO guardamos la clave.
         }
     }
-
 
     fun validarFormulario(): Boolean {
         // ... (Tu función de validación no necesita cambios)
