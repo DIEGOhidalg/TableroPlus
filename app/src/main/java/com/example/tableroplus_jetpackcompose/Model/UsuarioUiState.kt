@@ -7,5 +7,6 @@ data class UsuarioUiState (
     val correo: String = "",
     val clave: String = "",
     val errores: UsuarioErrores = UsuarioErrores(),
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val imagenUri: String = ""
 )

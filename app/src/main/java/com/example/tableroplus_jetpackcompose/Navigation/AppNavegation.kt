@@ -15,6 +15,8 @@ import com.example.tableroplus_jetpackcompose.Views.RegistroScreen
 import com.example.tableroplus_jetpackcompose.Views.RoutingScreen
 import com.example.tableroplus_jetpackcompose.Views.ToDoListScreen
 import com.example.tableroplus_jetpackcompose.Views.EditarScreen
+import com.example.tableroplus_jetpackcompose.Views.PerfilScreen
+
 
 
 @Composable
@@ -66,6 +68,13 @@ fun MyApp(vm: Lazy<ToDoViewModel>){
         composable("EditarScreen") {
             EditarScreen(navController, usuarioViewModel)
         }
+
+
+        composable("PerfilScreen") {
+            PerfilScreen(navController, usuarioViewModel)
+        }
+
+
 
     }
 }

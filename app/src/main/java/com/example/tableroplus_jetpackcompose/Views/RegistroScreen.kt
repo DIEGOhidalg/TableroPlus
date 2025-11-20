@@ -28,6 +28,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.example.tableroplus_jetpackcompose.R
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import coil.compose.AsyncImage
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.platform.LocalContext
+import android.content.Intent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 
 
 @Composable
@@ -52,6 +63,27 @@ fun RegistroScreen(
     val miColorCyanOscuro = Color(0xFF269D8C)
     val miColorCyanSinRegistro = Color(0xFF89BBB2)
 
+    val context = LocalContext.current
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            if (uri != null) {
+                // Esto es clave: Pedimos permiso permanente para leer este URI
+                // para que la app pueda verlo incluso después de reiniciarse.
+                try {
+                    val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    context.contentResolver.takePersistableUriPermission(uri, flag)
+                } catch (e: SecurityException) {
+                    e.printStackTrace()
+                }
+                // Guardamos el URI (como String) en el ViewModel
+                viewModel.onImagenUriChange(uri.toString())
+            }
+        }
+    )
+
+
     // --- ESTA ES LA ÚNICA COLUMNA PRINCIPAL ---
     Column(
         modifier = Modifier
@@ -62,13 +94,22 @@ fun RegistroScreen(
     ) {
 
         // --- Logo y Títulos ---
-        Image(
-            painter = painterResource(id = R.drawable.tablero_plus_logo),
-            contentDescription = "Logo de Tablero+",
-            contentScale = ContentScale.Fit,
+        AsyncImage(
+            // Si el URI está vacío, muestra el placeholder
+            model = estado.imagenUri.ifEmpty { R.drawable.ic_profile_placeholder },
+            contentDescription = "Imagen de Perfil",
             modifier = Modifier
-                .size(100.dp)
-                .clip(RoundedCornerShape(24.dp))
+                .size(120.dp) // Un tamaño más grande para el perfil
+                .clip(CircleShape) // La hacemos redonda
+                .background(Color.Gray.copy(alpha = 0.1f)) // Fondo por si la imagen tarda
+                .border(2.dp, miColorCyanSinRegistro, CircleShape) // Borde
+                .clickable {
+                    // 3. AL HACER CLIC, LANZAMOS EL PICKER
+                    photoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                },
+            contentScale = ContentScale.Crop // Asegura que la imagen llene el círculo
         )
 
         Spacer(modifier = Modifier.height(24.dp)) // Espacio
