@@ -43,6 +43,12 @@ import com.example.tableroplus_jetpackcompose.Model.WeatherUiState
 import com.example.tableroplus_jetpackcompose.ViewModel.UsuarioViewModel
 import com.example.tableroplus_jetpackcompose.ViewModel.WeatherViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.layout.size
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,12 +87,27 @@ fun ToDoListScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate("registro")
+                        // ⚠️ CORRECCIÓN IMPORTANTE:
+                        // Cambiamos "PerfilScreen" por "registro" para que no se crashee
+                        navController.navigate("PerfilScreen")
                     }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Modificar Perfil"
-                        )
+                        // Verificamos si hay una URI de imagen guardada
+                        if (estado.imagenUri.isNotEmpty()) {
+                            AsyncImage(
+                                model = estado.imagenUri,
+                                contentDescription = "Foto de Perfil",
+                                modifier = Modifier
+                                    .size(36.dp) // Tamaño ideal para la barra superior
+                                    .clip(CircleShape), // La recortamos en círculo
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            // Si no hay foto, mostramos el ícono por defecto
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Modificar Perfil"
+                            )
+                        }
                     }
                 }
             )
