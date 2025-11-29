@@ -2,6 +2,9 @@ package com.example.tableroplus_jetpackcompose.Views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,10 +51,36 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.Alignment
 
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.font.FontWeight
+
+
+//  Degradado para tareas NORMALES
+val brushNormal = Brush.linearGradient(
+    colors = listOf(
+        // Cyan claro
+        Color(0xFF26C6DA),
+        Color(0xFF80DEEA),
+        Color(0xFF50FFD6),
+    )
+)
+
+// 2. Degradado para tareas URGENTES
+val brushUrgente = Brush.linearGradient(
+    colors = listOf(
+        Color(0xFFFFAB40),
+        Color(0xFFFFCC80),
+        Color(0xFFECFF70),
+    )
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+
 fun ToDoListScreen(
     navController: NavController,
     viewModel: UsuarioViewModel,
@@ -72,113 +101,159 @@ fun ToDoListScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            "Tablero Plus+",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                        Text(
-                            " Bienvenido ${estado.nombre}. Estas son tus tareas: ",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        // ⚠️ CORRECCIÓN IMPORTANTE:
-                        // Cambiamos "PerfilScreen" por "registro" para que no se crashee
-                        navController.navigate("PerfilScreen")
-                    }) {
-                        // Verificamos si hay una URI de imagen guardada
-                        if (estado.imagenUri.isNotEmpty()) {
-                            AsyncImage(
-                                model = estado.imagenUri,
-                                contentDescription = "Foto de Perfil",
-                                modifier = Modifier
-                                    .size(36.dp) // Tamaño ideal para la barra superior
-                                    .clip(CircleShape), // La recortamos en círculo
-                                contentScale = ContentScale.Crop
+            // 1. Creamos una Box para contener el fondo degradado
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(brush = brushNormal) // Usamos tu degradado Cyan (o crea uno nuevo)
+            ) {
+                TopAppBar(
+                    title = {
+                        Column {
+                            Text(
+                                "Tablero Plus+",
+                                style = MaterialTheme.typography.titleLarge
                             )
-                        } else {
-                            // Si no hay foto, mostramos el ícono por defecto
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = "Modificar Perfil"
+                            Text(
+                                " Bienvenido ${estado.nombre}",
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
+                    },
+                    // 2. Aquí está la magia: Hacemos el TopAppBar transparente
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent, // ¡IMPORTANTE!
+                        titleContentColor = Color.White,    // Texto blanco
+                        actionIconContentColor = Color.White // Iconos blancos
+                    ),
+                    actions = {
+                        IconButton(onClick = {
+                            navController.navigate("PerfilScreen")
+                        }) {
+                            // Validamos si hay imagen
+                            if (estado.imagenUri.isNotEmpty()) {
+                                AsyncImage(
+                                    model = estado.imagenUri,
+                                    contentDescription = "Foto",
+                                    modifier = Modifier
+                                        .size(36.dp)
+                                        .clip(CircleShape)
+                                        .border(1.dp, Color.White, CircleShape), // Borde blanco queda genial
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = "Perfil"
+                                )
+                            }
+                        }
                     }
-                }
-            )
+                )
+            }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                navController.navigate("AddNewTodo")
-            }) {
-                Icon(Icons.Default.Add, contentDescription = "add new todo")
+            Box( // Usamos Box para poder ponerle el degradado al fondo
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(16.dp)) // Cuadrado redondeado
+                    .background(brush = brushNormal) // Usamos el mismo degradado Cyan
+                    .clickable {
+                        navController.navigate("AddNewTodo")
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "add",
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp)
+                )
             }
         }
     ) { innerPadding ->
 
-        LazyColumn(Modifier.padding(innerPadding)) {
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp), // Un poco de margen a los lados se ve mejor
+            verticalArrangement = Arrangement.spacedBy(8.dp) // Espacio entre tareas
+        ) {
 
             // HEADER DE CLIMA
             item {
                 WeatherHeader(weatherUiState)
             }
-
+            
             items(count = list.toList().count()) { index ->
-                Column(
+                
+                val tarea = list.toList()[index]
+
+                // Elegimos el pincel según la urgencia
+                val fondoActual = if (tarea.isUrgent) brushUrgente else brushNormal
+
+                // --- TARJETA DE TAREA MEJORADA ---
+                Row(
                     modifier = Modifier
-                        .background(
-                            if (list.toList()[index].isUrgent)
-                                Color.hsv(0f, 0.55f, 1f)
-                            else
-                                Color.hsv(230f, 0.20f, 1f),
-                            RoundedCornerShape(12.dp)
-                        )
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp)) // Redondeamos las esquinas
+                        .background(brush = fondoActual) // <--- AQUÍ APLICAMOS EL DEGRADADO
+                        .padding(16.dp), // Padding interno para que el texto no toque el borde
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(
-                                1.dp,
-                                Color.hsv(230f, 0.20f, 0.72f),
-                                RoundedCornerShape(16.dp)
-                            )
-                            .padding(10.dp)
+                    // Columna de textos
+                    Column(
+                        modifier = Modifier.weight(1f) // Ocupa todo el espacio disponible
                     ) {
-                        Column(modifier = Modifier.fillMaxWidth(0.7f)) {
-                            Text(fontSize = 20.sp, text = list.toList()[index].task)
-                            Spacer(Modifier.height(10.dp))
-                            Text(fontSize = 20.sp, text = list.toList()[index].date)
-                        }
-
-                        Switch(
-                            checked = list.toList()[index].isUrgent,
-                            onCheckedChange = { isChecked ->
-                                onswitch(index, isChecked)
-                            }
+                        Text(
+                            text = tarea.task,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White // Texto blanco para contraste
                         )
+                        Text(
+                            text = tarea.date,
+                            fontSize = 14.sp,
+                            color = Color.White.copy(alpha = 0.8f) // Blanco un poco transparente
+                        )
+                    }
 
-                        IconButton(onClick = {
-                            navController.navigate("EditTodo/$index")
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Edit"
-                            )
-                        }
+                    // --- ACCIONES (Switch, Editar, Borrar) ---
+                    // Para que se parezca a la imagen derecha (más limpio),
+                    // podrías ocultar estos botones o hacerlos blancos.
+                    // Por ahora, los dejaremos pero en blanco.
 
-                        IconButton(onClick = {
-                            ondelete(list.toList()[index])
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete"
-                            )
-                        }
+                    Switch(
+                        checked = tarea.isUrgent,
+                        onCheckedChange = { onswitch(index, it) },
+                        colors = SwitchDefaults.colors(
+                                // --- ESTADO ACTIVO (ON) ---
+                                // El círculo cuando está prendido (Blanco se ve limpio)
+                                checkedThumbColor = Color.White,
+                                // La barra de fondo cuando está prendido (Tu Cyan)
+                                checkedTrackColor = Color(0xFFDA9826),
+                                // El borde (lo hacemos transparente para que se vea moderno)
+                                checkedBorderColor = Color.Transparent,
+
+                                // --- ESTADO INACTIVO (OFF) ---
+                                // El círculo cuando está apagado
+                                uncheckedThumbColor = Color.White,
+                                // La barra de fondo cuando está apagado (Gris suave)
+                                uncheckedTrackColor = Color(0xFFE0E0E0),
+                                uncheckedBorderColor = Color.Transparent
+                        )
+                    )
+
+                    IconButton(onClick = { navController.navigate("EditTodo/$index") }) {
+                        Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color.White)
+                    }
+
+                    IconButton(onClick = { ondelete(tarea) }) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = Color.White
+                        )
                     }
                 }
             }

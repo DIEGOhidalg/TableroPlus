@@ -50,6 +50,8 @@ fun EditarScreen(
     navController: NavController,
     viewModel: UsuarioViewModel
 ) {
+
+
     val estado by viewModel.estado.collectAsState()
     var mostrarClave by remember { mutableStateOf(false) }
 
@@ -118,20 +120,14 @@ fun EditarScreen(
         Spacer(modifier = Modifier.height(24.dp)) // Espacio
 
         Text(
-            text = "Tablero+",
+            text = "Editar perfil de Tablero+",
             // No necesitas fillMaxWidth() si horizontalAlignment es Center
             modifier = Modifier.padding(bottom = 4.dp),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            color = miColorCyanOscuro,
         )
 
-        Text(
-            text = "Editar perfil",
-            modifier = Modifier.padding(bottom = 32.dp), // Espacio antes del formulario
-            color = Color.Gray,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleSmall
-        )
 
         // --- Campos de Formulario ---
         OutlinedTextField(
